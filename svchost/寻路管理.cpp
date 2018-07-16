@@ -2,6 +2,7 @@
 #include "寻路管理.h"
 #include "读写函数.h"
 #include "基址管理.h"
+#include "功能函数.h"
 
 
 unsigned char orientation_vector[16][4] = {
@@ -53,16 +54,46 @@ int find_min_weight_key(vector<vector<RoomInfo>> room_array, vector<RoomInfo> op
 	return key;
 }
 
-VOID read_map_info(MapInfo &map_info)
+VOID read_map_info(MapInfo &map_info,int 模式)
 {
-	map_info.width = 4;
+	int 临时地址一;
+	int 临时地址二; 
+	int 格子数量;
+	int 偏移地址一; 
+	int 偏移地址二; 
+	int 宽高地址; 
+	int 数组地址;
+	偏移地址一 = readInteger(readInteger(商店基址 - 8) + 时间基址);
+	偏移地址二 = readInteger(偏移地址一 + 门型偏移);
+	宽高地址 =	 readInteger(偏移地址二 + 宽高偏移);
+	数组地址 =   readInteger(偏移地址二 + 数组偏移);
+	临时地址二 = 解密(偏移地址二 + 领主房间x - 24) + 1;
+	临时地址一 = readInteger(数组地址 + 临时地址二 * 20 - 16);
+	map_info.width =	readInteger(宽高地址 + 临时地址二 * 8 - 8);
+	map_info.height =	readInteger(宽高地址 + 临时地址二 * 8 - 4);
+	格子数量 = map_info.width * map_info.height;
+	for (int i = 0; i < 格子数量; i++)
+	{
+		map_info.channel.insert(map_info.channel.end(), readInteger(临时地址一 + i * 4));
+	}
+	map_info.start_coordinate.x = readInteger(偏移地址一 + 起始坐标x);
+	map_info.start_coordinate.y = readInteger(偏移地址一 + 起始坐标y);
+	if (模式 == 领主模式) {
+		map_info.end_coordinate.x = 解密(偏移地址二 + 领主房间x);
+		map_info.end_coordinate.y = 解密(偏移地址二 + 领主房间y);
+	}
+	else if (模式 == 深渊模式) {
+		map_info.end_coordinate.x = 解密(偏移地址二 + 深渊房间x);
+		map_info.end_coordinate.y = 解密(偏移地址二 + 深渊房间y);
+	}
+	/*map_info.width = 4;
 	map_info.height = 3;
 	map_info.name = "ge lan di";
 	map_info.channel = { 1,5,12,0,0,9,14,8,0,3,7,6 };
 	map_info.start_coordinate.x = 0;
 	map_info.start_coordinate.y = 0;
 	map_info.end_coordinate.x = 3;
-	map_info.end_coordinate.y = 1;
+	map_info.end_coordinate.y = 1;*/
 }
 
 VOID create_room_array(MapInfo map_info, vector<vector<RoomInfo>> &room_array)
@@ -160,7 +191,6 @@ VOID search_path(MapInfo map_info,vector<vector<RoomInfo>> &room_array, RoomInfo
 
 VOID recall_path(MapInfo map_info, vector<vector<RoomInfo>> room_array, RoomInfo room_info, vector<int> &path)
 {
-	//printf("[%d-%d]-[%d-%d]\n", room_info.coordinate.x, room_info.coordinate.y, room_info.parent_coordinate.x, room_info.parent_coordinate.y);
 	if (room_info.coordinate.x < room_info.parent_coordinate.x)
 	{
 		path.insert(path.end(),0);
@@ -179,21 +209,21 @@ VOID recall_path(MapInfo map_info, vector<vector<RoomInfo>> room_array, RoomInfo
 	}
 }
 
-int getDirection()
+int getDirection(int 模式)
 {
 	MapInfo map_info;
 	vector<vector<RoomInfo>> room_array;
 	RoomInfo boss_room;
 	vector<int> path;
 	// 1.读取地图信息
-	read_map_info(map_info);
+	read_map_info(map_info,模式);
 	// 2.创建房间数组
 	create_room_array(map_info,room_array);
 	// 3.搜索路径
 	search_path(map_info,room_array,boss_room);
 	// 4.回溯路径
 	recall_path(map_info,room_array,boss_room, path);
-	printf("size %d\n", path.size());
+	/*printf("size %d\n", path.size());
 	for (int i = path.size()-1; i >= 0; i--)
 	{
 		if (path[i] == 0)
@@ -209,7 +239,7 @@ int getDirection()
 		else if (path[i] == 3) {
 			printf("下\n");
 		}
-	}
+	}*/
 	return path[path.size() - 1];
 }
 

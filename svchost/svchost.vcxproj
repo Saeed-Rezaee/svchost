@@ -94,6 +94,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -159,6 +160,7 @@
     <ClInclude Include="扩展函数.h" />
     <ClInclude Include="自动管理.h" />
     <ClInclude Include="读写函数.h" />
+    <ClInclude Include="遍历数据.h" />
     <ClInclude Include="鼠键函数.h" />
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +180,7 @@
     </ClCompile>
     <ClCompile Include="自动管理.cpp" />
     <ClCompile Include="读写函数.cpp" />
+    <ClCompile Include="遍历数据.cpp" />
     <ClCompile Include="鼠键函数.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

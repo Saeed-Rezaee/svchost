@@ -31,3 +31,26 @@ struct MapInfo {
 	Coordinate start_coordinate;
 	Coordinate end_coordinate;
 };
+
+struct 地图结构
+{
+	int 地图地址;
+	int 首地址;
+	int 尾地址;
+	int 对象数量;
+};
+
+struct 背包结构
+{
+	int 背包地址;
+	int 背包首地址;
+	int 物品首地址;
+};
+
+struct 任务结构
+{
+	int 任务地址;
+	int 首地址;
+	int 尾地址;
+	int 任务数量;
+};
