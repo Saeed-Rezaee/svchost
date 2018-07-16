@@ -3,11 +3,7 @@
 #include "读写函数.h"
 #include "基址管理.h"
 
-vector<Coordinate> open_list;
-vector<Coordinate> close_list;
-MapInfo map_info;
-vector<vector<RoomInfo>> room_array;
-vector<int> path;
+
 unsigned char orientation_vector[16][4] = {
 	// 左 右 上 下 
 	{ 0, 0, 0, 0 },//0	无
@@ -28,19 +24,48 @@ unsigned char orientation_vector[16][4] = {
 	{ 1, 1, 1, 1 } //15	左	右	上	下
 };
 
-void read_map_info()
+
+BOOL has_list(vector<RoomInfo> list, RoomInfo to_search_room)
+{
+	for (unsigned i = 0; i < list.size(); i++)
+	{
+		if (list[i].coordinate.x == to_search_room.coordinate.x && list[i].coordinate.y == to_search_room.coordinate.y)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+int find_min_weight_key(vector<vector<RoomInfo>> room_array, vector<RoomInfo> open_list)
+{
+	int key = 0;
+	int min_weight;
+	int weight;
+	for (unsigned i = 0; i < open_list.size(); i++)
+	{
+		weight = room_array[open_list[i].coordinate.y][open_list[i].coordinate.x].weight;
+		if (i == 0 || weight < min_weight) {
+			min_weight = weight;
+			key = i;
+		}
+	}
+	return key;
+}
+
+VOID read_map_info(MapInfo &map_info)
 {
 	map_info.width = 4;
 	map_info.height = 3;
 	map_info.name = "ge lan di";
 	map_info.channel = { 1,5,12,0,0,9,14,8,0,3,7,6 };
-	map_info.start_coordinate.x = 1;
-	map_info.start_coordinate.y = 1;
+	map_info.start_coordinate.x = 0;
+	map_info.start_coordinate.y = 0;
 	map_info.end_coordinate.x = 3;
 	map_info.end_coordinate.y = 1;
 }
 
-void create_room_array()
+VOID create_room_array(MapInfo map_info, vector<vector<RoomInfo>> &room_array)
 {
 	RoomInfo temp_room_info;
 	// 1.初始化容器大小
@@ -69,128 +94,107 @@ void create_room_array()
 	}
 }
 
-bool has_close_list(RoomInfo room_info)
+VOID search_path(MapInfo map_info,vector<vector<RoomInfo>> &room_array, RoomInfo &boss_room)
 {
-	for (unsigned i = 0; i < close_list.size(); i++)
+	vector<RoomInfo> open_list;
+	vector<RoomInfo> close_list;
+	vector<RoomInfo>::iterator iter;
+	RoomInfo current_room;
+	RoomInfo to_search_room;
+	int min_weight_key, min_weight;
+
+	open_list.insert(open_list.end(), room_array[map_info.start_coordinate.y][map_info.start_coordinate.x]);
+	while (open_list.size() > 0)
 	{
-		if (close_list[i].x == room_info.coordinate.x && close_list[i].y == room_info.coordinate.y)
+		min_weight_key = find_min_weight_key(room_array, open_list);
+		current_room = open_list[min_weight_key];
+		min_weight = current_room.weight;
+		
+		if (min_weight == 0)
 		{
-			return true;
+			boss_room = current_room;
+			boss_room.parent_coordinate = boss_room.coordinate;
+			return;
 		}
-	}
-	return false;
-}
-
-bool has_open_list(RoomInfo room_info)
-{
-	for (unsigned i = 0; i < open_list.size(); i++)
-	{
-		if (open_list[i].x == room_info.coordinate.x && open_list[i].y == room_info.coordinate.y)
+		if (current_room.up == TRUE)
 		{
-			return true;
+			to_search_room = room_array[current_room.coordinate.y - 1][current_room.coordinate.x];
+			if (has_list(open_list, to_search_room) == false and has_list(close_list, to_search_room) == false)
+			{
+				open_list.insert(open_list.end(), to_search_room);
+				room_array[to_search_room.coordinate.y][to_search_room.coordinate.x].parent_coordinate = current_room.coordinate;
+			}
 		}
+		if (current_room.bottom == TRUE)
+		{
+			to_search_room = room_array[current_room.coordinate.y + 1][current_room.coordinate.x];
+			if (has_list(open_list, to_search_room) == false and has_list(close_list, to_search_room) == false)
+			{
+				open_list.insert(open_list.end(), to_search_room);
+				room_array[to_search_room.coordinate.y][to_search_room.coordinate.x].parent_coordinate = current_room.coordinate;
+			}
+		}
+		if (current_room.left == TRUE)
+		{
+			to_search_room = room_array[current_room.coordinate.y][current_room.coordinate.x - 1];
+			if (has_list(open_list, to_search_room) == false and has_list(close_list, to_search_room) == false)
+			{
+				open_list.insert(open_list.end(), to_search_room);
+				room_array[to_search_room.coordinate.y][to_search_room.coordinate.x].parent_coordinate = current_room.coordinate;
+			}
+		}
+		if (current_room.right == TRUE)
+		{
+			to_search_room = room_array[current_room.coordinate.y][current_room.coordinate.x + 1];
+			if (has_list(open_list, to_search_room) == false and has_list(close_list, to_search_room) == false)
+			{
+				open_list.insert(open_list.end(), to_search_room);
+				room_array[to_search_room.coordinate.y][to_search_room.coordinate.x].parent_coordinate = current_room.coordinate;
+			}
+		}
+		iter = open_list.begin() + min_weight_key;
+		open_list.erase(iter);
+		close_list.insert(close_list.end(), current_room);
 	}
-	return false;
 }
 
-int find_min_weight_key()
+VOID recall_path(MapInfo map_info, vector<vector<RoomInfo>> room_array, RoomInfo room_info, vector<int> &path)
 {
-	int key = 0;
-	int min_weight;
-	int weight;
-	for (unsigned i = 0; i < open_list.size(); i++)
+	//printf("[%d-%d]-[%d-%d]\n", room_info.coordinate.x, room_info.coordinate.y, room_info.parent_coordinate.x, room_info.parent_coordinate.y);
+	if (room_info.coordinate.x < room_info.parent_coordinate.x)
 	{
-		weight = room_array[open_list[i].y][open_list[i].x].weight;
-		if (i == 0 || weight < min_weight) {
-			min_weight = weight;
-			key = i;
-		}
+		path.insert(path.end(),0);
 	}
-	return key;
-}
-
-void backtrack(RoomInfo this_room_info)
-{
-	if (this_room_info.coordinate.x < this_room_info.parent_coordinate.x)
-	{
-		path.insert(path.begin(), 0);
+	else if(room_info.coordinate.x > room_info.parent_coordinate.x){
+		path.insert(path.end(), 1);
 	}
-	else if (this_room_info.coordinate.x > this_room_info.parent_coordinate.x) {
-		path.insert(path.begin(), 1);
+	else if (room_info.coordinate.y < room_info.parent_coordinate.y) {
+		path.insert(path.end(), 2);
 	}
-	else if (this_room_info.coordinate.y > this_room_info.parent_coordinate.y) {
-		path.insert(path.begin(), 3);
+	else if(room_info.coordinate.y > room_info.parent_coordinate.y){
+		path.insert(path.end(), 3);
 	}
-	else {
-		path.insert(path.begin(), 2);
-	}
-	if (!(this_room_info.parent_coordinate.x == map_info.start_coordinate.x && this_room_info.parent_coordinate.y == map_info.start_coordinate.y)) {
-
-		backtrack(room_array[this_room_info.parent_coordinate.y][this_room_info.parent_coordinate.x]);
-	}
-
-}
-
-void path_arithmetic()
-{
-	Coordinate temp_coordinate;
-	RoomInfo current_room_info;
-	RoomInfo temp_room_info;
-	int min_weight;
-	//1.把起始房间坐标加入到开放列表
-	open_list.insert(open_list.begin(), map_info.start_coordinate);
-	min_weight = room_array[map_info.start_coordinate.y][map_info.start_coordinate.x].weight;
-	while (open_list.size() > 0) {
-		temp_coordinate = open_list[find_min_weight_key()];
-		current_room_info = room_array[temp_coordinate.y][temp_coordinate.x];
-		min_weight = current_room_info.weight;
-		if (current_room_info.up) {
-			temp_room_info = room_array[current_room_info.coordinate.y - 1][current_room_info.coordinate.x];
-			if (!has_close_list(temp_room_info) && !has_open_list(temp_room_info))
-			{
-				open_list.insert(open_list.end(), temp_room_info.coordinate);
-				room_array[temp_room_info.coordinate.y][temp_room_info.coordinate.x].parent_coordinate = current_room_info.coordinate;
-			}
-		}
-		if (current_room_info.bottom) {
-			temp_room_info = room_array[current_room_info.coordinate.y + 1][current_room_info.coordinate.x];
-			if (!has_close_list(temp_room_info) && !has_open_list(temp_room_info))
-			{
-				open_list.insert(open_list.end(), temp_room_info.coordinate);
-				room_array[temp_room_info.coordinate.y][temp_room_info.coordinate.x].parent_coordinate = current_room_info.coordinate;
-			}
-		}
-		if (current_room_info.bottom) {
-			temp_room_info = room_array[current_room_info.coordinate.y][current_room_info.coordinate.x - 1];
-			if (!has_close_list(temp_room_info) && !has_open_list(temp_room_info))
-			{
-				open_list.insert(open_list.end(), temp_room_info.coordinate);
-				room_array[temp_room_info.coordinate.y][temp_room_info.coordinate.x].parent_coordinate = current_room_info.coordinate;
-			}
-		}
-		if (current_room_info.right) {
-			temp_room_info = room_array[current_room_info.coordinate.y][current_room_info.coordinate.x + 1];
-			if (!has_close_list(temp_room_info) && !has_open_list(temp_room_info))
-			{
-				open_list.insert(open_list.end(), temp_room_info.coordinate);
-				room_array[temp_room_info.coordinate.y][temp_room_info.coordinate.x].parent_coordinate = current_room_info.coordinate;
-			}
-		}
-		if (temp_room_info.coordinate.x == map_info.end_coordinate.x && temp_room_info.coordinate.y == map_info.end_coordinate.y) {
-			backtrack(room_array[temp_room_info.coordinate.y][temp_room_info.coordinate.x]);
-			printf("已找到\n"); break;
-		}
-		open_list.erase(open_list.begin());
-		close_list.insert(close_list.begin(), current_room_info.coordinate);
+	if (room_info.parent_coordinate.x != map_info.start_coordinate.x || room_info.parent_coordinate.y != map_info.start_coordinate.y) {
+		recall_path(map_info, room_array, room_array[room_info.parent_coordinate.y][room_info.parent_coordinate.x], path);
 	}
 }
 
-int get_direction()
+int getDirection()
 {
-	read_map_info();
-	create_room_array();
-	path_arithmetic();
-	for (unsigned i = 0; i < path.size(); i++)
+	MapInfo map_info;
+	vector<vector<RoomInfo>> room_array;
+	RoomInfo boss_room;
+	vector<int> path;
+	// 1.读取地图信息
+	read_map_info(map_info);
+	// 2.创建房间数组
+	create_room_array(map_info,room_array);
+	// 3.搜索路径
+	search_path(map_info,room_array,boss_room);
+	// 4.回溯路径
+	recall_path(map_info,room_array,boss_room, path);
+	printf("size %d\n", path.size());
+	for (int i = path.size()-1; i >= 0; i--)
 	{
 		if (path[i] == 0)
 		{
@@ -206,5 +210,9 @@ int get_direction()
 			printf("下\n");
 		}
 	}
-	return path.front();
+	return path[path.size() - 1];
 }
+
+
+
+
