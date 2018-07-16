@@ -21,12 +21,39 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="基址管理.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="全局变量.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="读写函数.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="鼠键函数.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="全局常量.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="扩展函数.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="svchost.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="读写函数.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="鼠键函数.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="扩展函数.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
