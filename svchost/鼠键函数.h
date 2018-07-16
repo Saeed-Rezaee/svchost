@@ -17,4 +17,4 @@ VOID keyDown(INT keyCode);
 // ¼üÌ§Æð
 VOID keyUp(INT keyCode);
 // °´¼ü
-VOID doKeyPress(INT keyCode, INT s);
+VOID doKeyPress(INT keyCode, INT s = 50);

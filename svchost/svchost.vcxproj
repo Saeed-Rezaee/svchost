@@ -126,6 +126,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -151,8 +152,12 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="全局变量.h" />
     <ClInclude Include="全局常量.h" />
+    <ClInclude Include="判断函数.h" />
+    <ClInclude Include="功能函数.h" />
     <ClInclude Include="基址管理.h" />
+    <ClInclude Include="寻路管理.h" />
     <ClInclude Include="扩展函数.h" />
+    <ClInclude Include="自动管理.h" />
     <ClInclude Include="读写函数.h" />
     <ClInclude Include="鼠键函数.h" />
   </ItemGroup>
@@ -164,7 +169,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="svchost.cpp" />
+    <ClCompile Include="判断函数.cpp" />
+    <ClCompile Include="功能函数.cpp" />
+    <ClCompile Include="寻路管理.cpp" />
     <ClCompile Include="扩展函数.cpp" />
+    <ClCompile Include="全局结构.h">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="自动管理.cpp" />
     <ClCompile Include="读写函数.cpp" />
     <ClCompile Include="鼠键函数.cpp" />
   </ItemGroup>

@@ -118,4 +118,11 @@
 //#define VK_RCONTROL = 163
 //#define VK_RMENU = 165
 
+// 暂停
 #define PAUSE system("pause")
+
+// 地图ID
+#define 格蓝迪 104
+
+// 职业ID
+#define 帕拉丁 666
