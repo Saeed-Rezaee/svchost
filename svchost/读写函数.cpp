@@ -133,7 +133,7 @@ BOOL writeDouble(INT lpBaseAddress, DOUBLE lpBuffer)
 	return writeMemory(lpBaseAddress, &lpBuffer, sizeof(lpBuffer));
 }
 
-BOOL writeBytes(INT lpBaseAddress, vector<byte> bytes)
+BOOL writeBytes(INT lpBaseAddress, vector<int> bytes)
 {
 	INT size = bytes.size();
 	byte *lpBuffer = new byte[size];

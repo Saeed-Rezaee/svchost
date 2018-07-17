@@ -54,6 +54,9 @@
     <ClInclude Include="遍历数据.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Asm.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -87,6 +90,9 @@
       <Filter>头文件</Filter>
     </ClCompile>
     <ClCompile Include="遍历数据.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Asm.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

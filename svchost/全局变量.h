@@ -4,6 +4,7 @@ extern DWORD dwProcessId;
 extern HANDLE hProcess;
 
 extern 屏幕分辨率 _屏幕分辨率;
+extern map<const char*, 内存结构> 已分配的内存;
 
 extern BOOL 自动开关;
 extern INT 副本ID;

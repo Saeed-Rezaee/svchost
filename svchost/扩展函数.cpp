@@ -2,7 +2,7 @@
 #include "扩展函数.h"
 #include <ctime>
   
-
+map<const char*, 内存结构> 已分配的内存;
 
 INT createRandom(INT min, INT max)
 {
@@ -18,7 +18,6 @@ INT createRandom(INT min, INT max)
 	return random;
 }
 
-
 char* unicodeToAnsi(TCHAR* wstr)
 {
 	if (!wstr)
@@ -29,7 +28,6 @@ char* unicodeToAnsi(TCHAR* wstr)
 	str[strlen] = '\0';
 	return str;
 }
-
 
 BOOL 删除自身()
 {
@@ -175,7 +173,6 @@ int AobScan(HANDLE hProcess, const char *aob, int beginaddr, int endaddr)
 	return -1;
 }
 
-
 // 获取时间戳
 INT getTime()
 {
@@ -185,3 +182,93 @@ INT getTime()
 	t_end = GetTickCount();
 	return  t_end - t_start;
 }
+
+string IntToHex(int value, int len)
+{
+	char str[50] = { NULL };
+	if (len == 8) {
+		sprintf_s(str, "%08x", value);
+	}
+	else if (len == 4) {
+		sprintf_s(str, "%04x", value);
+	}
+	string tmp1(str);
+	tmp1 = tmp1.substr(tmp1.length() - len, len);
+	string tmp2;
+	for (unsigned int i = 0; i < tmp1.length() / 2; i++)
+	{
+		tmp2 = tmp2 + tmp1.substr(tmp1.length() - 2 - 2 * i, 2);
+	}
+	return tmp2;
+}
+
+INT 还原地址(string 文本地址)
+{
+	int 转换地址 = 0;
+	char 临时数组[256] = { 0 };
+	strcpy_s(临时数组, 文本地址.c_str());
+	sscanf_s(临时数组, "%x", &转换地址);
+	return 转换地址;
+}
+
+vector<int> IntToBytes(int value, int len)
+{
+	string s = IntToHex(value, len);
+	int 长度 = s.length();
+	if (长度 % 2 != 0)
+	{
+		长度 = 长度 + 1;
+	}
+	vector<int> 结果(长度 / 2, 0);
+	for (int i = 0; i < 长度 / 2; i++)
+	{
+		结果[i] = 还原地址(s.substr(i * 2, 2));
+	}
+	return 结果;
+}
+
+int allocMemory(const char *name, int size)
+{
+	内存结构 内存 = 已分配的内存[name];
+	if (内存.size == size) {
+		return 内存.first_addr;
+	}
+	else {
+		内存.first_addr = (int)VirtualAllocEx(hProcess, NULL, (SIZE_T)size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+		if (!内存.first_addr) {
+			printf("%s 分配内存失败!\n", name);
+			return -1;
+		}
+		内存.size = size;
+		已分配的内存[name] = 内存;
+		return 内存.first_addr;
+	}
+}
+
+bool freeMemory(const char *name)
+{
+	内存结构 内存 = 已分配的内存[name];
+	if (VirtualFreeEx(hProcess, (LPVOID)内存.first_addr, 0, MEM_RELEASE))
+	{
+		printf("%s 释放成功!\n", name);
+		return true;
+	}
+	else {
+		printf("%s 释放失败!\n", name);
+		return false;
+	}
+}
+
+void freeAllAlloc()
+{
+	map<const char*, 内存结构 > ::iterator mapi;
+	mapi = 已分配的内存.begin();
+	内存结构 tmp;
+	while (mapi != 已分配的内存.end())
+	{
+		tmp = mapi->second;
+		VirtualFreeEx(hProcess, (LPVOID)tmp.first_addr, 0, MEM_RELEASE);
+		mapi++;
+	}
+}
+

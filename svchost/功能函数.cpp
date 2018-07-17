@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "功能函数.h"
 #include "读写函数.h"
+#include "Asm.h"
 
 
 INT 解密(int address)
@@ -132,7 +133,20 @@ BOOL 获取领主房间坐标(Coordinate &领主房间坐标)
 	return true;
 }
 
-VOID 坐标CALL()
-{
 
+
+
+VOID 坐标CALL(int 对象指针, int x, int y, int z)
+{
+	Asm _Asm;
+	_Asm.Mov_Esi(对象指针);
+	_Asm.Mov_Edi_Ptr_Esi();
+	_Asm.Push(z);
+	_Asm.Push(y);
+	_Asm.Push(x);
+	_Asm.Mov_Eax_Ptr_Edi_Add(0xA8);
+	_Asm.Mov_Ecx_Esi();
+	_Asm.Call_Eax();
+	_Asm.Ret();
+	_Asm.RemoteCAll("坐标CALL");
 }

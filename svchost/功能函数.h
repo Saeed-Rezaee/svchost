@@ -17,6 +17,8 @@ BOOL 获取当前房间坐标(Coordinate & 当前房间坐标);
 
 BOOL 获取领主房间坐标(Coordinate & 领主房间坐标);
 
+VOID 坐标CALL(int 对象指针, int x, int y, int z);
+
 INT 解密(int address);
 
 BOOL 选择角色();

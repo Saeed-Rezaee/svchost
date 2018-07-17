@@ -33,6 +33,6 @@ BOOL writeFloat(INT lpBaseAddress, FLOAT lpBuffer);
 // Ð´Ë«¸¡µã
 BOOL writeDouble(INT lpBaseAddress, DOUBLE lpBuffer);
 // Ð´×Ö½ÚÊý×é
-BOOL writeBytes(INT lpBaseAddress, vector<byte> bytes);
+BOOL writeBytes(INT lpBaseAddress, vector<int> bytes);
 // Ð´×Ö·û´®
 BOOL writeString(INT lpBaseAddress, LPCWSTR lpBuffer);

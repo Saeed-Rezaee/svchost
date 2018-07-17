@@ -25,7 +25,6 @@ unsigned char orientation_vector[16][4] = {
 	{ 1, 1, 1, 1 } //15	вС	ср	ио	об
 };
 
-
 BOOL has_list(vector<RoomInfo> list, RoomInfo to_search_room)
 {
 	for (unsigned i = 0; i < list.size(); i++)

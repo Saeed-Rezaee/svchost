@@ -54,3 +54,9 @@ struct 任务结构
 	int 尾地址;
 	int 任务数量;
 };
+
+struct 内存结构
+{
+	int first_addr;
+	int size;
+};

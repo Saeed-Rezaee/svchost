@@ -32,7 +32,6 @@ VOID mouseClick(INT s)
 	Sleep(50 + createRandom(0, 10));
 }
 
-
 VOID mouseDoubleClick(INT s)
 {
 	mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
@@ -45,7 +44,6 @@ VOID mouseDoubleClick(INT s)
 	Sleep(50 + createRandom(0, 10));
 }
 
-
 BOOL getKeyStatus(INT keyCode)
 {
 	if (GetKeyState(keyCode) < 0) {
@@ -53,7 +51,6 @@ BOOL getKeyStatus(INT keyCode)
 	}
 	return FALSE;
 }
-
 
 INT getSCan(INT keyCode)
 {
@@ -70,7 +67,6 @@ INT getSCan(INT keyCode)
 	return sCan;
 }
 
-
 VOID keyDown(INT keyCode)
 {
 	if (getKeyStatus(keyCode) == FALSE) {
@@ -78,14 +74,12 @@ VOID keyDown(INT keyCode)
 	}
 }
 
-
 VOID keyUp(INT keyCode)
 {
 	if (getKeyStatus(keyCode) == TRUE) {
 		keybd_event(keyCode, getSCan(keyCode), KEYEVENTF_KEYUP, 0);
 	}
 }
-
 
 VOID doKeyPress(INT keyCode, INT s)
 {
