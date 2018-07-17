@@ -51,6 +51,9 @@
     <ClInclude Include="寻路管理.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="遍历数据.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -82,6 +85,9 @@
     </ClCompile>
     <ClCompile Include="全局结构.h">
       <Filter>头文件</Filter>
+    </ClCompile>
+    <ClCompile Include="遍历数据.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
