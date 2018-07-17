@@ -162,6 +162,7 @@
     <ClInclude Include="自动管理.h" />
     <ClInclude Include="读写函数.h" />
     <ClInclude Include="遍历数据.h" />
+    <ClInclude Include="钩子管理.h" />
     <ClInclude Include="鼠键函数.h" />
   </ItemGroup>
   <ItemGroup>
@@ -183,6 +184,7 @@
     <ClCompile Include="自动管理.cpp" />
     <ClCompile Include="读写函数.cpp" />
     <ClCompile Include="遍历数据.cpp" />
+    <ClCompile Include="钩子管理.cpp" />
     <ClCompile Include="鼠键函数.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

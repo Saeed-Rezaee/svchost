@@ -27,7 +27,8 @@ VOID Asm::RemoteCAll(const char * CallName)
 	// 2.写入汇编代码
 	writeBytes(地址, Opcode);
 	// 3.调用
-	printf("%x\n", 地址);
+	//printf("%x\n", 地址);
+	SendMessage(hWnd,消息ID, 地址,0);
 }
 // =================================PUSH
 VOID Asm::Push(INT value)

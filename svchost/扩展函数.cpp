@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "扩展函数.h"
 #include <ctime>
+#include <tlhelp32.h>
   
 map<const char*, 内存结构> 已分配的内存;
 
@@ -289,3 +290,31 @@ BOOL 获取游戏窗口(游戏窗口 &_游戏窗口)
 	return false;
 }
 
+int getModleAddrByPid(DWORD process_id, LPCWSTR modle_name)
+{
+	HANDLE        hModuleSnap = INVALID_HANDLE_VALUE;
+	MODULEENTRY32 me32 = { sizeof(MODULEENTRY32) };
+	// 1. 创建一个模块相关的快照句柄
+	hModuleSnap = CreateToolhelp32Snapshot(
+		TH32CS_SNAPMODULE,  // 指定快照的类型
+		process_id);            // 指定进程
+	if (hModuleSnap == INVALID_HANDLE_VALUE)
+		return false;
+	// 2. 通过模块快照句柄获取第一个模块信息
+	if (!Module32First(hModuleSnap, &me32)) {
+		CloseHandle(hModuleSnap);
+		return false;
+	}
+	// 3. 循环获取模块信息szExePath
+	do {
+		//_tprintf(TEXT("%s -- %s"), me32.szModule, modle_name);
+		if (wcscmp(me32.szModule, modle_name) == 0) {
+			//printf("模块句柄%x  ", me32.hModule);
+			//printf("加载基址%x  ", me32.modBaseAddr);
+			return (int)me32.modBaseAddr;
+		}
+	} while (Module32Next(hModuleSnap, &me32));
+	// 4. 关闭句柄并退出函数
+	CloseHandle(hModuleSnap);
+	return 0;
+}

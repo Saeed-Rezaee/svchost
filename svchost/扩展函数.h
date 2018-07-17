@@ -25,3 +25,5 @@ bool freeMemory(const char * name);
 void freeAllAlloc();
 
 BOOL 获取游戏窗口(游戏窗口 & _游戏窗口);
+
+int getModleAddrByPid(DWORD process_id, LPCWSTR modle_name);

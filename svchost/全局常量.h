@@ -42,6 +42,7 @@
 #define 领主模式 1
 #define 深渊模式 2
 
+#define 消息ID 10028
 // 暂停
 #define PAUSE system("pause")
 
