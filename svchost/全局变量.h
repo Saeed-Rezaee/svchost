@@ -11,6 +11,7 @@ extern INT 副本ID;
 extern INT 副本难度;
 extern BOOL 首图标记;
 extern INT 刷图计时;
+extern INT 刷图计次;
 
 
 

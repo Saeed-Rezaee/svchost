@@ -23,6 +23,12 @@ BOOL 获取领主房间坐标(Coordinate & 领主房间坐标);
 
 VOID 坐标CALL(int 对象指针, int x, int y, int z);
 
+VOID 脚本卖物();
+
+INT 取刷图模式();
+
+VOID 通关处理();
+
 /*VOID Send_缓冲CALL(Asm _Asm, int head);
 
 VOID Send_密包CALL(Asm _Asm, int param, int len);
@@ -30,6 +36,8 @@ VOID Send_密包CALL(Asm _Asm, int param, int len);
 VOID Send_发包CALL(Asm _Asm);*/
 
 INT 解密(int address);
+
+BOOL 确认通关();
 
 BOOL 选择角色();
 
@@ -42,3 +50,5 @@ INT 取剩余疲劳();
 BOOL 获取坐标(int 对象, Coordinate 坐标);
 
 VOID 捡物();
+
+VOID 跟随();

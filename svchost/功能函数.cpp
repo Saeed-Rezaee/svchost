@@ -6,6 +6,9 @@
 #include "寻路管理.h"
 #include "鼠键函数.h"
 #include "Asm.h"
+#include "判断函数.h"
+
+INT 刷图计次;
 
 INT 解密(int address)
 {
@@ -32,6 +35,23 @@ VOID 过图()
 VOID 翻牌()
 {
 
+}
+
+BOOL 确认通关()
+{
+	int i = 0;
+	while (是否通关())
+	{
+		if (i>=15) {
+			printf("获取通关商店超时");
+			自动开关 = false;
+			return false;
+		}
+		i = i + 1;
+		Sleep(500);
+		doKeyPress(VK_ESCAPE);
+	}
+	return true;
 }
 
 BOOL 选择角色()
@@ -444,4 +464,53 @@ VOID 脚本卖物()
 		}
 	}
 	writeInteger(0x0606b540, 0);
+}
+
+INT 取刷图模式()
+{
+	return 搬砖模式;
+}
+
+VOID 通关处理()
+{
+	int i = 0;
+	int 剩余疲劳;
+	int 刷图模式;
+	Coordinate 当前房间;
+	Coordinate 新的房间;
+
+	获取当前房间坐标(当前房间);
+	while (true)
+	{
+		
+		获取当前房间坐标(新的房间);
+		if (
+			当前房间.x != 新的房间.x ||
+			当前房间.y != 新的房间.y ||
+			取游戏状态() != 3
+			)
+		{
+			刷图计次 += 1;
+			首图标记 = true;
+			刷图计时 = getTime() - 刷图计时;
+			printf("自动 [%d]次 | 耗时[%d]秒\n", 刷图计次, 刷图计时);
+			Sleep(2000);
+		}
+		剩余疲劳 = 取剩余疲劳();
+		刷图模式 = 取刷图模式();
+		if (刷图模式 == 搬砖模式)
+		{
+			if (剩余疲劳 == 0)
+			{
+				doKeyPress(VK_F12);
+			}
+			else {
+				doKeyPress(VK_F10);
+			}
+			Sleep(2000);
+		}
+		else if (刷图模式 == 剧情模式) {
+
+		}
+	}
 }
