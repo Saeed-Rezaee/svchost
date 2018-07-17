@@ -38,6 +38,10 @@ struct 地图结构
 	int 首地址;
 	int 尾地址;
 	int 对象数量;
+	int 对象地址;
+	int 对象阵营;
+	int 对象类型;
+	int 对象血量;
 };
 
 struct 背包结构
@@ -45,6 +49,9 @@ struct 背包结构
 	int 背包地址;
 	int 背包首地址;
 	int 物品首地址;
+	int 物品地址;
+	int 物品属性;
+	const char *物品名称;
 };
 
 struct 任务结构
@@ -59,4 +66,14 @@ struct 内存结构
 {
 	int first_addr;
 	int size;
+};
+
+struct 游戏窗口
+{
+	int top;
+	int bottom;
+	int left;
+	int right;
+	int width;
+	int height;
 };

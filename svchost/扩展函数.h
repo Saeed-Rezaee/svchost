@@ -23,3 +23,5 @@ int allocMemory(const char * name, int size);
 bool freeMemory(const char * name);
 
 void freeAllAlloc();
+
+BOOL 获取游戏窗口(游戏窗口 & _游戏窗口);

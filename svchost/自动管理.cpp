@@ -62,7 +62,7 @@ VOID 自动()
 	{
 	case 0: 
 		if (取当前角色下标()+1 > 取角色数量()) {
-			//printf("所有角色刷图完毕,自动关闭\n");
+			printf("所有角色刷图完毕,自动关闭\n");
 			自动开关 = false;
 		}
 		else {
@@ -86,10 +86,6 @@ VOID 自动()
 		}
 		break;
 	case 3:
-		if (首图标记 == TRUE) {
-			刷图计时 = getTime();
-			首图标记 = FALSE;
-		}
 		图内处理();
 		break;
 	default:

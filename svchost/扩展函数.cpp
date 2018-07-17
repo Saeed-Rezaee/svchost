@@ -272,3 +272,20 @@ void freeAllAlloc()
 	}
 }
 
+BOOL 获取游戏窗口(游戏窗口 &_游戏窗口)
+{
+	RECT rect;
+	if (hWnd)
+	{
+		GetWindowRect(hWnd, &rect);
+		_游戏窗口.bottom = rect.bottom;
+		_游戏窗口.left = rect.left;
+		_游戏窗口.right = rect.right;
+		_游戏窗口.top = rect.top;
+		_游戏窗口.width = (rect.right - rect.left);
+		_游戏窗口.height = (rect.bottom - rect.top);
+		return true;
+	}
+	return false;
+}
+
