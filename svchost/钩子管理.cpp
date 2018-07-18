@@ -2,6 +2,7 @@
 #include "钩子管理.h"
 #include "扩展函数.h"
 #include "读写函数.h"
+#include "Asm.h"
 
 #define NAKED void __declspec(naked)
 #define ReturnAddr		0x400400
@@ -19,13 +20,13 @@ NAKED NewCode()
 		je newcode
 		jmp originalcode
 		newcode :
-		mov ecx, dword ptr[ebp + 0x10]
+			mov ecx, dword ptr[ebp + 0x10]
 			call ecx
 			add esp, 0x8
 			pop ebp
 			ret
-			originalcode :
-		mov eax, fs : [00000000]
+		originalcode :
+			mov eax, fs : [00000000]
 			push eax
 			push ebx
 			push esi
@@ -108,4 +109,22 @@ void HookWindowsMsg()
 		exit(1);
 	}
 	//printf("哦尼玛的彩虹鸡巴K！！！！！\n");
+}
+
+VOID Hook_窗口消息()
+{
+	int Hook_地址 = getModleAddrByPid(dwProcessId, L"CrossAdapter4DNF.dll") + 0x12DAA;
+	int Hook_长度 = 0x9;
+	int Ret_地址 = getModleAddrByPid(dwProcessId, L"CrossAdapter4DNF.dll") + 0x12DAA + Hook_长度;
+	int OriginalCodeAddress;
+	int NewCodeAddress;
+	vector<int> NewCode = {};
+	vector<int> OriginalCode = {};
+	Asm _Asm;
+	_Asm.Mov_Ecx_Ptr_Ebp_Add(0xC);
+	_Asm.Cmp_Ecx(消息ID);
+	_Asm.Mov_Eax(OriginalCodeAddress);
+	_Asm.Mov_Ecx(NewCodeAddress);
+
+
 }

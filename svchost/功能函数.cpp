@@ -310,7 +310,7 @@ INT 获取背包物品索引(const char *物品名称)
 
 VOID 坐标CALL(int 对象指针, int x, int y, int z)
 {
-	Asm _Asm;
+	Asm _Asm("坐标CALL");
 	_Asm.Mov_Esi(对象指针);
 	_Asm.Mov_Edi_Ptr_Esi();
 	_Asm.Push(z);
@@ -320,7 +320,13 @@ VOID 坐标CALL(int 对象指针, int x, int y, int z)
 	_Asm.Mov_Ecx_Esi();
 	_Asm.Call_Eax();
 	_Asm.Ret();
-	_Asm.RemoteCAll("坐标CALL");
+	_Asm.RemoteCAll();
+}
+
+VOID 测试(int 对象指针, int x, int y, int z)
+{
+	Asm _Asm("测试",1024);
+	_Asm.RemoteCAll();
 }
 
 VOID Send_缓冲CALL(Asm _Asm,int head)

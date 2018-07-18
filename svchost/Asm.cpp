@@ -4,9 +4,16 @@
 #include "读写函数.h"
 
 
-Asm::Asm()
+Asm::Asm(const char *name,int size)
 {
-	printf("tesl\n");
+	Opcode.clear();
+	// 1.申请内存空间
+	Name = name;
+	if (size > 0)
+	{
+		Address = allocMemory(name, size);
+	}
+	
 }
 
 
@@ -19,16 +26,14 @@ VOID Asm::Clear()
 	Opcode.clear();
 }
 
-VOID Asm::RemoteCAll(const char * CallName)
+VOID Asm::RemoteCAll()
 {
-	int 地址;
-	// 1.申请内存空间
-	地址 = allocMemory(CallName,Opcode.size());
-	// 2.写入汇编代码
-	writeBytes(地址, Opcode);
-	// 3.调用
-	//printf("%x\n", 地址);
-	SendMessage(hWnd,消息ID, 地址,0);
+	if (Address != NULL)
+	{
+		Address = allocMemory(Name, Opcode.size());
+	}
+	writeBytes(Address, Opcode);
+	SendMessage(hWnd,消息ID, Address,0);
 }
 // =================================PUSH
 VOID Asm::Push(INT value)
@@ -1409,6 +1414,7 @@ VOID Asm::Sub_Esp(INT value)
 }
 
 //================================CALL
+
 VOID Asm::Call_Eax() 
 {
 	Opcode.insert(Opcode.end(), { 0xFF,0xD0 });
@@ -1435,11 +1441,93 @@ VOID Asm::Call_Edi()
 }
 VOID Asm::Call_Ebp() 
 {
-	Opcode.insert(Opcode.end(), { 0xFF,0xD4 });
+	Opcode.insert(Opcode.end(), { 0xFF,0xD5 });
 }
 VOID Asm::Call_Esp() 
 {
-	Opcode.insert(Opcode.end(), { 0xFF,0xD5 });
+	Opcode.insert(Opcode.end(), { 0xFF,0xD4 });
+}
+
+//================================跳转
+VOID Asm::Jmp(int value)
+{
+	if (Address != NULL)
+	{
+		INT RVA = value - Address - 5;
+		Opcode.insert(Opcode.end(), { 0xE9 });
+		TempOpcode = IntToBytes(RVA);
+		for (unsigned i = 0; i < TempOpcode.size(); i++) {
+			Opcode.insert(Opcode.end(), TempOpcode[i]);
+		}
+	}
+	else {
+		printf("Jmp_Ptr Address 不能为空\n");
+	}
+}
+VOID Asm::Je(int value)
+{
+	if (Address != NULL)
+	{
+		INT RVA = value - Address - 5;
+		Opcode.insert(Opcode.end(), { 0x0F,0x84 });
+		TempOpcode = IntToBytes(RVA);
+		for (unsigned i = 0; i < TempOpcode.size(); i++) {
+			Opcode.insert(Opcode.end(), TempOpcode[i]);
+		}
+	}
+	else {
+		printf("Je Address 不能为空\n");
+	}
+}
+VOID Asm::Jne(int value)
+{
+	if (Address != NULL)
+	{
+		INT RVA = value - Address - 5;
+		Opcode.insert(Opcode.end(), { 0x0F,0x85 });
+		TempOpcode = IntToBytes(RVA);
+		for (unsigned i = 0; i < TempOpcode.size(); i++) {
+			Opcode.insert(Opcode.end(), TempOpcode[i]);
+		}
+	}
+	else {
+		printf("Jne Address 不能为空\n");
+	}
+}
+
+
+
+VOID Asm::Jmp_Eax()
+{
+	Opcode.insert(Opcode.end(), { 0xFF,0xE0 });
+}
+VOID Asm::Jmp_Ebx()
+{
+	Opcode.insert(Opcode.end(), { 0xFF,0xE3 });
+}
+VOID Asm::Jmp_Ecx()
+{
+	Opcode.insert(Opcode.end(), { 0xFF,0xE1 });
+}
+VOID Asm::Jmp_Edx()
+{
+	Opcode.insert(Opcode.end(), { 0xFF,0xE2 });
+}
+VOID Asm::Jmp_Esi()
+{
+	Opcode.insert(Opcode.end(), { 0xFF,0xE6 });
+}
+VOID Asm::Jmp_Edi()
+{
+	Opcode.insert(Opcode.end(), { 0xFF,0xE7 });
+}
+VOID Asm::Jmp_Ebp()
+{
+	Opcode.insert(Opcode.end(), { 0xFF,0xE5 });
+}
+VOID Asm::Jmp_Esp()
+{
+	Opcode.insert(Opcode.end(), { 0xFF,0xE4 });
 }
 
 //================================RET
@@ -1457,3 +1545,110 @@ VOID Asm::Ret(int value)
 		}
 	}
 }
+
+//================================CMP
+VOID Asm::Cmp_Eax(INT value) 
+{
+	if (value <= 127 && value >= -128) {
+		Opcode.insert(Opcode.end(), { 0x83,0xF8 ,value });
+	}
+	else {
+		Opcode.insert(Opcode.end(), 0x3D);
+		TempOpcode = IntToBytes(value);
+		for (unsigned i = 0; i < TempOpcode.size(); i++) {
+			Opcode.insert(Opcode.end(), TempOpcode[i]);
+		}
+	}
+}
+VOID Asm::Cmp_Ebx(INT value)
+{
+	if (value <= 127 && value >= -128) {
+		Opcode.insert(Opcode.end(), { 0x83,0xFB ,value });
+	}
+	else {
+		Opcode.insert(Opcode.end(), 0x81,0xFB);
+		TempOpcode = IntToBytes(value);
+		for (unsigned i = 0; i < TempOpcode.size(); i++) {
+			Opcode.insert(Opcode.end(), TempOpcode[i]);
+		}
+	}
+}
+VOID Asm::Cmp_Ecx(INT value) 
+{
+	if (value <= 127 && value >= -128) {
+		Opcode.insert(Opcode.end(), { 0x83,0xF9 ,value });
+	}
+	else {
+		Opcode.insert(Opcode.end(), 0x81, 0xF9);
+		TempOpcode = IntToBytes(value);
+		for (unsigned i = 0; i < TempOpcode.size(); i++) {
+			Opcode.insert(Opcode.end(), TempOpcode[i]);
+		}
+	}
+}
+VOID Asm::Cmp_Edx(INT value) 
+{
+	if (value <= 127 && value >= -128) {
+		Opcode.insert(Opcode.end(), { 0x83,0xFA ,value });
+	}
+	else {
+		Opcode.insert(Opcode.end(), 0x81, 0xFA);
+		TempOpcode = IntToBytes(value);
+		for (unsigned i = 0; i < TempOpcode.size(); i++) {
+			Opcode.insert(Opcode.end(), TempOpcode[i]);
+		}
+	}
+}
+VOID Asm::Cmp_Esi(INT value) 
+{
+	if (value <= 127 && value >= -128) {
+		Opcode.insert(Opcode.end(), { 0x83,0xFE ,value });
+	}
+	else {
+		Opcode.insert(Opcode.end(), 0x81, 0xFE);
+		TempOpcode = IntToBytes(value);
+		for (unsigned i = 0; i < TempOpcode.size(); i++) {
+			Opcode.insert(Opcode.end(), TempOpcode[i]);
+		}
+	}
+}
+VOID Asm::Cmp_Edi(INT value) 
+{
+	if (value <= 127 && value >= -128) {
+		Opcode.insert(Opcode.end(), { 0x83,0xFF ,value });
+	}
+	else {
+		Opcode.insert(Opcode.end(), 0x81, 0xFF);
+		TempOpcode = IntToBytes(value);
+		for (unsigned i = 0; i < TempOpcode.size(); i++) {
+			Opcode.insert(Opcode.end(), TempOpcode[i]);
+		}
+	}
+}
+VOID Asm::Cmp_Ebp(INT value) 
+{
+	if (value <= 127 && value >= -128) {
+		Opcode.insert(Opcode.end(), { 0x83,0xFD ,value });
+	}
+	else {
+		Opcode.insert(Opcode.end(), 0x81, 0xFD);
+		TempOpcode = IntToBytes(value);
+		for (unsigned i = 0; i < TempOpcode.size(); i++) {
+			Opcode.insert(Opcode.end(), TempOpcode[i]);
+		}
+	}
+}
+VOID Asm::Cmp_Esp(INT value) 
+{
+	if (value <= 127 && value >= -128) {
+		Opcode.insert(Opcode.end(), { 0x83,0xFC ,value });
+	}
+	else {
+		Opcode.insert(Opcode.end(), 0x81, 0xFC);
+		TempOpcode = IntToBytes(value);
+		for (unsigned i = 0; i < TempOpcode.size(); i++) {
+			Opcode.insert(Opcode.end(), TempOpcode[i]);
+		}
+	}
+}
+
