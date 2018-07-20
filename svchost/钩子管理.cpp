@@ -111,7 +111,7 @@ void HookWindowsMsg()
 	//printf("哦尼玛的彩虹鸡巴K！！！！！\n");
 }
 
-VOID Hook_窗口消息()
+/*VOID Hook_窗口消息()
 {
 	int Hook_地址 = getModleAddrByPid(dwProcessId, L"CrossAdapter4DNF.dll") + 0x12DAA;
 	int Hook_长度 = 0x9;
@@ -127,4 +127,4 @@ VOID Hook_窗口消息()
 	_Asm.Mov_Ecx(NewCodeAddress);
 
 
-}
+}*/

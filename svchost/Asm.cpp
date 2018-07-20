@@ -1473,7 +1473,7 @@ VOID Asm::Jmp(int value)
 {
 	if (Address != NULL)
 	{
-		INT RVA = value - Address - 5;
+		INT RVA = value - *(int *)Address - 5;
 		Opcode.insert(Opcode.end(), { 0xE9 });
 		TempOpcode = IntToBytes(RVA);
 		for (unsigned i = 0; i < TempOpcode.size(); i++) {
@@ -1488,7 +1488,7 @@ VOID Asm::Je(int value)
 {
 	if (Address != NULL)
 	{
-		INT RVA = value - Address - 5;
+		INT RVA = value - *(int *)Address - 5;
 		Opcode.insert(Opcode.end(), { 0x0F,0x84 });
 		TempOpcode = IntToBytes(RVA);
 		for (unsigned i = 0; i < TempOpcode.size(); i++) {
@@ -1503,7 +1503,7 @@ VOID Asm::Jne(int value)
 {
 	if (Address != NULL)
 	{
-		INT RVA = value - Address - 5;
+		INT RVA = value - *(int *)Address - 5;
 		Opcode.insert(Opcode.end(), { 0x0F,0x85 });
 		TempOpcode = IntToBytes(RVA);
 		for (unsigned i = 0; i < TempOpcode.size(); i++) {
