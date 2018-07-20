@@ -6,7 +6,7 @@ public:
 
 	vector<int> TempOpcode;
 
-	DWORD Address = NULL;
+	LPVOID Address = NULL;
 
 	const char *Name;
 

@@ -4,6 +4,9 @@
 #include "读写函数.h"
 
 
+FARPROC  CallWindowProcA_addr = NULL;
+HANDLE hRemoteThread = NULL;
+
 Asm::Asm(const char *name,int size)
 {
 	Opcode.clear();
@@ -11,7 +14,7 @@ Asm::Asm(const char *name,int size)
 	Name = name;
 	if (size > 0)
 	{
-		Address = allocMemory(name, size);
+		Address = VirtualAllocEx(hProcess, 0, Opcode.size(), MEM_COMMIT, PAGE_EXECUTE_READWRITE);
 	}
 	
 }
@@ -30,10 +33,27 @@ VOID Asm::RemoteCAll()
 {
 	if (Address != NULL)
 	{
-		Address = allocMemory(Name, Opcode.size());
+		Address = VirtualAllocEx(hProcess, 0, Opcode.size(), MEM_COMMIT, PAGE_EXECUTE_READWRITE);
 	}
-	writeBytes(Address, Opcode);
-	SendMessage(hWnd,消息ID, Address,0);
+	if (Address)
+	{
+		writeBytes((int)Address, Opcode);
+		if (CallWindowProcA_addr == NULL)
+		{
+			CallWindowProcA_addr = ::GetProcAddress(GetModuleHandleA("user32.dll"), "CallWindowProcW");
+		}
+		hRemoteThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)CallWindowProcA_addr, Address, 0, 0);
+		//等待线程结束
+		WaitForSingleObject(hRemoteThread, 0xFF);
+		// 清理工作
+		VirtualFreeEx(hProcess, Address, Opcode.size(), MEM_DECOMMIT);
+		// 关闭句柄
+		CloseHandle(hRemoteThread);
+	}
+	else {
+		printf("%s 内存分配失败！！！！！！\n", Name);
+	}
+	
 }
 // =================================PUSH
 VOID Asm::Push(INT value)
