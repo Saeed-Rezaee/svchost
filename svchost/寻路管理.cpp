@@ -132,7 +132,6 @@ VOID search_path(MapInfo map_info,vector<vector<RoomInfo>> &room_array, RoomInfo
 	RoomInfo current_room;
 	RoomInfo to_search_room;
 	int min_weight_key, min_weight;
-
 	open_list.insert(open_list.end(), room_array[map_info.start_coordinate.y][map_info.start_coordinate.x]);
 	while (open_list.size() > 0)
 	{
